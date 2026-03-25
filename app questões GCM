@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GM Manaus 2026 — Banco de Questões</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap');
+:root{
+  --bg:#0d0f14;--s1:#151820;--s2:#1c2030;
+  --b1:rgba(255,255,255,.07);--b2:rgba(255,255,255,.14);
+  --gold:#e8b84b;--gold2:#f5d280;
+  --blue:#4a9eff;--green:#3ecf8e;--red:#f05353;--orange:#f0953a;
+  --txt:#e8eaf0;--mut:#7a7f94;
+  --fh:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:var(--fb);height:100vh;overflow:hidden;font-size:15px}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sb{width:260px;background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.logo{padding:18px 18px 14px;border-bottom:1px solid var(--b1)}
+.logo-badge{display:inline-block;background:var(--gold);color:#1a1200;font-family:var(--fh);font-weight:800;font-size:9px;letter-spacing:2px;padding:3px 8px;border-radius:3px;margin-bottom:6px}
+.logo h1{font-family:var(--fh);font-size:15px;font-weight:700;line-height:1.25}
+.logo p{font-size:11px;color:var(--mut);margin-top:2px}
+.side-stats{padding:12px 14px;border-bottom:1px solid var(--b1);display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sstat{background:var(--s2);border-radius:8px;padding:10px;text-align:center}
+.sstat-v{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--gold)}
+.sstat-l{font-size:10px;color:var(--mut);margin-top:1px}
+.nlbl{padding:12px 16px 5px;font-size:10px;letter-spacing:2px;color:var(--mut);text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;font-size:13px;color:var(--mut);border-left:3px solid transparent;transition:background .15s;user-select:none}
+.ni:hover{background:var(--s2);color:var(--txt)}
+.ni.on{background:rgba(232,184,75,.08);color:var(--gold);border-left-color:var(--gold)}
+.ni-ico{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.ni-nm{flex:1}
+.ni-ct{font-size:10px;background:var(--s2);padding:2px 6px;border-radius:10px;color:var(--mut);flex-shrink:0}
+.ni.on .ni-ct{background:rgba(232,184,75,.15);color:var(--gold)}
+.pb-mini{height:2px;background:var(--b1);margin:1px 16px 2px;border-radius:2px;overflow:hidden}
+.pb-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .5s}
+.sb-bottom{padding:12px 16px;border-top:1px solid var(--b1);margin-top:auto}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:14px 22px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--s1)}
+.tb-title{font-family:var(--fh);font-size:17px;font-weight:700;flex:1}
+.tb-sub{font-size:11px;color:var(--mut)}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-family:var(--fb);font-size:13px;font-weight:500;transition:all .15s}
+.btn-gold{background:var(--gold);color:#1a1200}
+.btn-gold:hover{background:var(--gold2)}
+.btn-ghost{background:transparent;border:1px solid var(--b2);color:var(--mut)}
+.btn-ghost:hover{color:var(--txt);background:var(--s2)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.content{flex:1;overflow-y:auto;padding:22px}
+
+/* ── QUESTION CARD ── */
+.q-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500}
+.tag-sub{background:rgba(74,158,255,.13);color:var(--blue)}
+.tag-easy{background:rgba(62,207,142,.13);color:var(--green)}
+.tag-med{background:rgba(240,149,58,.13);color:var(--orange)}
+.tag-hard{background:rgba(240,83,83,.13);color:var(--red)}
+.tag-neu{background:rgba(255,255,255,.05);color:var(--mut)}
+.q-num{margin-left:auto;font-size:12px;color:var(--mut)}
+
+.qcard{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;position:relative;overflow:hidden}
+.qcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.qcard.answered::before{opacity:1}
+.q-text{font-size:15px;line-height:1.78;margin-bottom:20px}
+
+.options{display:flex;flex-direction:column;gap:9px}
+.option{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:10px;border:1px solid var(--b1);cursor:pointer;transition:all .15s;background:var(--s2);font-size:14px;line-height:1.55}
+.option:hover:not(.locked){border-color:var(--b2);background:rgba(255,255,255,.05)}
+.option.correct{border-color:var(--green)!important;background:rgba(62,207,142,.09)}
+.option.wrong{border-color:var(--red)!important;background:rgba(240,83,83,.09)}
+.option.locked{cursor:default}
+.opt-letter{width:26px;height:26px;border-radius:50%;border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;font-family:var(--fh);transition:all .15s;margin-top:1px}
+.option.correct .opt-letter{background:var(--green);border-color:var(--green);color:#fff}
+.option.wrong .opt-letter{background:var(--red);border-color:var(--red);color:#fff}
+
+.feedback{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:13px;line-height:1.68;display:none;animation:fadeUp .3s ease}
+.feedback.show{display:block}
+.feedback.fb-ok{background:rgba(62,207,142,.07);border:1px solid rgba(62,207,142,.22);color:#6ae0ae}
+.feedback.fb-ng{background:rgba(240,83,83,.07);border:1px solid rgba(240,83,83,.22);color:#ff9090}
+.feedback strong{display:block;margin-bottom:5px;font-size:14px}
+.q-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
+
+/* ── LOADING ── */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;gap:14px;text-align:center}
+.spinner{width:36px;height:36px;border:3px solid var(--b1);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
+
+/* ── DASHBOARD ── */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:22px}
+.dcard{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:16px}
+.dcard-v{font-family:var(--fh);font-size:28px;font-weight:800;color:var(--gold)}
+.dcard-l{font-size:11px;color:var(--mut);margin-top:2px}
+.dcard-s{font-size:12px;color:var(--txt);margin-top:5px}
+.sp-list{display:flex;flex-direction:column;gap:9px}
+.sp-item{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:13px 15px}
+.sp-h{display:flex;justify-content:space-between;margin-bottom:7px}
+.sp-name{font-size:13px;font-weight:500}
+.sp-pct{font-size:13px;font-weight:600}
+.sp-bar{height:4px;background:var(--b1);border-radius:2px;overflow:hidden}
+.sp-fill{height:100%;border-radius:2px;transition:width .5s}
+.sp-info{font-size:11px;color:var(--mut);margin-top:5px}
+
+/* ── DIFF BADGE ── */
+.diff-meter{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut)}
+.diff-dot{width:8px;height:8px;border-radius:50%;background:var(--b2)}
+.diff-dot.active-easy{background:var(--green)}
+.diff-dot.active-med{background:var(--orange)}
+.diff-dot.active-hard{background:var(--red)}
+
+/* ── EMPTY / TOAST ── */
+.empty{text-align:center;padding:70px 24px;color:var(--mut)}
+.empty h3{font-family:var(--fh);font-size:20px;color:var(--txt);margin-bottom:8px}
+.streak{display:inline-flex;align-items:center;gap:6px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.2);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--gold);font-weight:500}
+.toast{position:fixed;bottom:22px;right:22px;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;animation:slideIn .3s ease}
+.t-ok{background:var(--green);color:#fff}
+.t-ng{background:var(--red);color:#fff}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="sb">
+    <div class="logo">
+      <div class="logo-badge">CONCURSO 2026</div>
+      <h1>Guarda Municipal<br>Manaus</h1>
+      <p>Banco de Questões Adaptativo</p>
+    </div>
+    <div class="side-stats">
+      <div class="sstat"><div class="sstat-v" id="sid-tot">0</div><div class="sstat-l">respondidas</div></div>
+      <div class="sstat"><div class="sstat-v" id="sid-pct">—</div><div class="sstat-l">acertos</div></div>
+    </div>
+    <div class="nlbl">Matérias</div>
+    <div id="nav-list"></div>
+    <div class="sb-bottom">
+      <div class="ni" onclick="showDash()" style="border-left:none;padding-left:0">
+        <span class="ni-ico">📊</span><span class="ni-nm">Meu desempenho</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="tb-title" id="tb-title">Selecione uma matéria</div>
+        <div class="tb-sub" id="tb-sub">Escolha ao lado para começar</div>
+      </div>
+      <div id="stk-area"></div>
+      <div class="diff-meter" id="diff-meter" style="display:none">
+        <div class="diff-dot" id="d1"></div>
+        <div class="diff-dot" id="d2"></div>
+        <div class="diff-dot" id="d3"></div>
+        <span id="diff-lbl" style="font-size:11px"></span>
+      </div>
+      <button class="btn btn-ghost" id="btn-skip" onclick="loadQ()" style="display:none">Pular ↻</button>
+      <button class="btn btn-gold" id="btn-new" onclick="loadQ()" style="display:none">Nova questão ✦</button>
+    </div>
+    <div class="content" id="content">
+      <div class="empty">
+        <div style="font-size:48px;margin-bottom:14px">⚖️</div>
+        <h3>Pronto para treinar?</h3>
+        <p>Selecione uma matéria no menu lateral.</p>
+        <p style="margin-top:10px;font-size:12px">As questões progridem de fácil → médio → difícil<br>conforme você acerta.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  BANCO DE QUESTÕES
+//  Cada matéria tem questões em 3 níveis: fácil / médio / difícil
+// ══════════════════════════════════════════════════════
+const BANCO = {
+
+leg: {
+  facil:[
+    {e:"Qual lei institui o Estatuto Geral das Guardas Municipais no Brasil?",o:{A:"Lei 11.340/2006",B:"Lei 13.022/2014",C:"Lei 13.675/2018",D:"Lei 9.503/1997"},c:"B",x:"A Lei 13.022/2014 é o Estatuto Geral das Guardas Municipais, estabelecendo normas gerais para criação, competências e funcionamento das guardas no Brasil."},
+    {e:"A Lei Maria da Penha (Lei 11.340/2006) trata de:",o:{A:"Crimes de trânsito cometidos por mulheres",B:"Violência doméstica e familiar contra a mulher",C:"Igualdade salarial entre homens e mulheres",D:"Cotas para mulheres em concursos públicos"},c:"B",x:"A Lei 11.340/2006 cria mecanismos para coibir a violência doméstica e familiar contra a mulher, nos termos do art. 226 da CF/88."},
+    {e:"Conforme a Lei de Drogas (Lei 11.343/2006), o usuário de drogas é:",o:{A:"Preso por tráfico equiparado",B:"Sujeito a penas restritivas de direito, sem prisão",C:"Condenado à reclusão de 1 a 3 anos",D:"Encaminhado diretamente ao presídio"},c:"B",x:"O art. 28 da Lei 11.343/2006 prevê que o usuário não está sujeito à pena de prisão, mas a advertências, prestação de serviços ou medidas educativas."},
+    {e:"A LGPD (Lei 13.709/2018) tem como objetivo principal:",o:{A:"Punir crimes cibernéticos",B:"Regular o tratamento de dados pessoais",C:"Criar a identidade digital do cidadão",D:"Fiscalizar redes sociais no Brasil"},c:"B",x:"A Lei Geral de Proteção de Dados (LGPD) disciplina o tratamento de dados pessoais por pessoas naturais ou jurídicas, visando proteger os direitos fundamentais de liberdade e privacidade."},
+    {e:"O Estatuto do Desarmamento (Lei 10.826/2003) exige que o porte de arma de fogo por particular seja:",o:{A:"Permitido livremente a maiores de 18 anos",B:"Autorizado mediante registro e autorização do Exército",C:"Exclusivo de policiais militares da reserva",D:"Condicionado apenas à comprovação de residência fixa"},c:"B",x:"O art. 6º da Lei 10.826/2003 proíbe o porte de arma de fogo em todo o território nacional, salvo exceções legais, sendo necessária autorização da autoridade competente com requisitos específicos."},
+    {e:"Segundo a Lei 13.022/2014, as Guardas Municipais destinam-se à proteção de:",o:{A:"Fronteiras terrestres e marítimas",B:"Bens, serviços, logradouros e instalações municipais",C:"Delegacias e presídios estaduais",D:"Propriedades privadas mediante contrato"},c:"B",x:"O art. 4º da Lei 13.022/2014 define que as Guardas Municipais destinam-se à proteção de bens, serviços, logradouros e instalações dos municípios. Não têm competência para segurança privada ou instalações estaduais."},
+    {e:"A Lei de Acesso à Informação (Lei 12.527/2011) determina que o acesso a informações públicas é:",o:{A:"Restrito a jornalistas credenciados",B:"A regra geral, sendo o sigilo a exceção",C:"Permitido apenas para órgãos judiciais",D:"Condicionado ao pagamento de taxa"},c:"B",x:"A LAI estabelece que a publicidade é a regra geral nas ações governamentais e o sigilo é a exceção, garantindo o direito de qualquer cidadão requerer informações públicas sem necessidade de motivar o pedido."},
+    {e:"Os Crimes Hediondos (Lei 8.072/1990) são caracterizados, entre outros, pela:",o:{A:"Vedação à liberdade provisória com ou sem fiança",B:"Possibilidade de progressão de regime a qualquer tempo",C:"Pena máxima não superior a 4 anos",D:"Aplicação exclusiva a servidores públicos"},c:"A",x:"A Lei 8.072/1990, em sua redação original, vedava a liberdade provisória e a fiança. Mesmo com modificações posteriores, os crimes hediondos mantêm restrições severas como progressão de regime mais rígida e vedação à graça e anistia."},
+  ],
+  medio:[
+    {e:"Conforme o art. 5º da Lei 13.022/2014, é uma competência específica das Guardas Municipais:",o:{A:"Exercer o poder de polícia ostensiva nas estradas federais",B:"Atuar preventivamente no patrulhamento comunitário",C:"Conduzir investigações criminais autônomas",D:"Realizar prisões sem flagrante mediante ordem administrativa"},c:"B",x:"O art. 5º, IX, da Lei 13.022/2014 prevê que as GMs devem atuar de forma preventiva, ostensiva e comunitária, sendo o patrulhamento comunitário uma competência expressa, diferente de investigação criminal que cabe às polícias judiciárias."},
+    {e:"A Lei de Abuso de Autoridade (Lei 13.869/2019) prevê que constitui abuso quando o agente:",o:{A:"Realiza prisão em flagrante de crime permanente",B:"Deixa de identificar-se ao preso no momento da detenção",C:"Conduz suspeito para esclarecimentos em delegacia",D:"Utiliza algemas em caso de resistência"},c:"B",x:"O art. 9º da Lei 13.869/2019 tipifica como abuso de autoridade deixar de identificar-se ao preso, informando nome, cargo e matrícula. A lei exige transparência do agente público no exercício de suas funções coercitivas."},
+    {e:"Pelo Estatuto da GMM (LC 16/2021), o Guarda Municipal pode portar arma de fogo:",o:{A:"Apenas em situações de guerra declarada",B:"Em serviço e fora dele, conforme autorização legal",C:"Somente dentro das instalações municipais",D:"Apenas quando escoltando o prefeito"},c:"B",x:"O Estatuto da GMM, em consonância com a Lei 13.022/2014 e a Lei 10.826/2003, autoriza o Guarda Municipal a portar arma de fogo tanto em serviço quanto fora dele, desde que devidamente habilitado e dentro das normas regulamentares."},
+    {e:"O crime de tortura (Lei 9.455/1997) pode ser praticado:",o:{A:"Apenas por agentes de segurança pública",B:"Por qualquer pessoa, inclusive particulares",C:"Somente em presídios e delegacias",D:"Unicamente em casos de interrogatório policial"},c:"B",x:"A Lei 9.455/1997 não limita o sujeito ativo do crime de tortura a agentes públicos — qualquer pessoa pode ser sujeito ativo. Quando praticada por agente público, há causa de aumento de pena."},
+    {e:"Nos crimes ambientais (Lei 9.605/1998), as pessoas jurídicas:",o:{A:"Não podem ser responsabilizadas criminalmente",B:"Podem ser responsabilizadas penalmente, civil e administrativamente",C:"Respondem apenas na esfera civil",D:"São punidas somente com suspensão de atividades"},c:"B",x:"O art. 3º da Lei 9.605/1998 inovou ao prever a responsabilidade penal da pessoa jurídica nos crimes ambientais, que pode ser punida com multa, restrição de direitos e prestação de serviços à comunidade, de forma autônoma ou concomitante com a responsabilidade dos dirigentes."},
+    {e:"A improbidade administrativa (Lei 8.429/1992) que causa enriquecimento ilícito ao agente tem como sanção:",o:{A:"Apenas advertência e suspensão de direitos políticos por 3 anos",B:"Suspensão de direitos políticos de 8 a 10 anos, além de outras sanções",C:"Demissão do cargo sem possibilidade de ação civil",D:"Multa de até 100 salários mínimos como única penalidade"},c:"B",x:"O art. 12, I, da Lei 8.429/1992 prevê para o enriquecimento ilícito: perda dos bens ou valores acrescidos ilicitamente ao patrimônio, ressarcimento integral do dano, suspensão dos direitos políticos de 8 a 10 anos, pagamento de multa de até 3x o valor do acréscimo, e proibição de contratar com o poder público por 10 anos."},
+  ],
+  dificil:[
+    {e:"Conforme a Lei 13.022/2014, as Guardas Municipais podem colaborar com órgãos de segurança pública. Essa colaboração, contudo, NÃO inclui:",o:{A:"Participar de ações conjuntas com a Polícia Militar",B:"Auxiliar na fiscalização de estabelecimentos licenciados pelo município",C:"Assumir a competência exclusiva de investigação de crimes comuns",D:"Prestar apoio à Polícia Civil mediante convênio"},c:"C",x:"O art. 5º, VI, da Lei 13.022/2014 permite que as GMs colaborem com outros órgãos de segurança pública mediante convênios. Porém, investigação criminal é função exclusiva das Polícias Judiciárias (Civil e Federal), não podendo ser assumida pelas GMs."},
+    {e:"À luz da Lei 13.869/2019, o agente público que, ao efetuar uma detenção, impede deliberadamente o detido de comunicar-se com advogado ou familiar:",o:{A:"Pratica mera irregularidade administrativa sem tipificação penal",B:"Comete o crime de abuso de autoridade previsto no art. 10",C:"Responde apenas por prevaricação",D:"Não pratica crime se a detenção for legal"},c:"B",x:"O art. 10 da Lei 13.869/2019 tipifica como crime de abuso de autoridade impedir o preso de comunicar-se com seu advogado e familiares, independentemente de a prisão ser legal. A comunicação ao advogado é direito constitucional assegurado pelo art. 5º, LXIII, da CF/88."},
+    {e:"Em relação ao ECA (Lei 8.069/1990), a conduta de vender bebida alcoólica a adolescente configura:",o:{A:"Infração administrativa prevista no Código de Defesa do Consumidor",B:"Crime do art. 243 do ECA, com pena de detenção de 2 a 4 anos",C:"Mera contravenção penal, com pena de multa",D:"Ilícito civil, sujeito apenas a indenização"},c:"B",x:"O art. 243 do ECA, com redação dada pela Lei 13.106/2015, prevê como crime a venda, fornecimento, entrega ou ministração de bebida alcoólica a criança ou adolescente, com pena de detenção de 2 a 4 anos, além de multa. A norma protege o desenvolvimento pleno do menor."},
+    {e:"Sobre a Lei de Improbidade Administrativa (Lei 8.429/1992, com redações da Lei 14.230/2021), é CORRETO afirmar que:",o:{A:"O elemento subjetivo exigido para configuração dos atos de improbidade passou a ser o dolo específico",B:"Culpa grave é suficiente para configurar qualquer ato de improbidade",C:"O Ministério Público perdeu a legitimidade ativa para propor ação de improbidade",D:"Os prazos prescricionais foram extintos para cargos em comissão"},c:"A",x:"A Lei 14.230/2021, que reformou a LIA, exigiu expressamente o dolo para a configuração dos atos de improbidade administrativa, excluindo a responsabilização por culpa (exceto para o ressarcimento civil). O MP manteve legitimidade ativa exclusiva para a ação de improbidade."},
+  ]
+},
+
+const_: {
+  facil:[
+    {e:"Conforme o art. 37, caput, da CF/88, são princípios expressos da Administração Pública:",o:{A:"Legalidade, impessoalidade, moralidade, publicidade e eficiência",B:"Legalidade, isonomia, motivação, publicidade e eficiência",C:"Legitimidade, impessoalidade, moralidade, publicidade e eficiência",D:"Legalidade, impessoalidade, moralidade, publicidade e economicidade"},c:"A",x:"O art. 37, caput, da CF/88 consagra os princípios expressos LIMPE: Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência. As alternativas B, C e D trazem termos incorretos que não constam do dispositivo constitucional."},
+    {e:"O art. 5º, LXIII, da CF/88 garante ao preso o direito de:",o:{A:"Ser solto após 24 horas de detenção sem indiciamento",B:"Permanecer calado e comunicar-se com advogado e família",C:"Escolher o delegado responsável pelo seu caso",D:"Ter acesso irrestrito aos autos do inquérito policial"},c:"B",x:"O art. 5º, LXIII, assegura ao preso o direito ao silêncio (nemo tenetur se detegere) e de ser assistido pela família e por advogado. Esses direitos são irrenunciáveis e devem ser informados no ato da prisão."},
+    {e:"A aprovação prévia em concurso público é exigida para:",o:{A:"Cargos em comissão declarados em lei de livre nomeação",B:"Funções de confiança exercidas por servidor de carreira",C:"Provimento de cargos efetivos na Administração Pública",D:"Contratação de estagiários em órgãos públicos"},c:"C",x:"O art. 37, II, da CF/88 exige aprovação prévia em concurso público de provas, ou de provas e títulos, para o provimento de cargos efetivos. Cargos em comissão (art. 37, V) e funções de confiança constituem exceções expressas."},
+    {e:"De acordo com o art. 144 da CF/88, a segurança pública é dever do Estado e direito e responsabilidade de:",o:{A:"Exclusivamente das forças armadas",B:"Todos os cidadãos",C:"Somente dos órgãos policiais",D:"Apenas das administrações municipais"},c:"B",x:"O caput do art. 144 da CF/88 estabelece expressamente que a segurança pública é exercida para a preservação da ordem pública e da incolumidade das pessoas e do patrimônio, sendo dever do Estado e direito e responsabilidade de todos."},
+  ],
+  medio:[
+    {e:"Servidor público estável somente perderá o cargo mediante:",o:{A:"Decisão judicial transitada em julgado OU processo administrativo disciplinar OU procedimento de avaliação de desempenho",B:"Apenas por decisão judicial transitada em julgado",C:"Decisão do chefe imediato, ratificada pelo ministério",D:"Procedimento administrativo iniciado pelo Ministério Público"},c:"A",x:"O art. 41, §1º, da CF/88 prevê três hipóteses de perda do cargo pelo estável: sentença judicial transitada em julgado; processo administrativo em que seja assegurada ampla defesa; e procedimento de avaliação periódica de desempenho, na forma de lei complementar, assegurada ampla defesa."},
+    {e:"A regra constitucional da impessoalidade na Administração Pública implica:",o:{A:"Vedação de tratamento diferenciado a pessoas com deficiência",B:"Que os atos administrativos não são atribuídos ao agente que os praticou, mas ao órgão",C:"Proibição absoluta de qualquer distinção entre os administrados",D:"Obrigação de publicar todos os atos na imprensa oficial"},c:"B",x:"A impessoalidade tem dupla dimensão: (1) a Administração não pode favorecer ou prejudicar alguém por razões pessoais; e (2) os atos praticados pelo agente são imputados ao órgão/entidade, não à pessoa do agente — por isso a promoção pessoal em atos administrativos viola a impessoalidade."},
+    {e:"Sobre os direitos e garantias individuais, é vedado ao legislador:",o:{A:"Criar novos direitos fundamentais além do rol do art. 5º",B:"Restringir direitos fundamentais mesmo por lei",C:"Abolir o direito ao devido processo legal",D:"Regulamentar o exercício de direitos constitucionalmente previstos"},c:"C",x:"Os direitos e garantias do art. 5º constituem cláusulas pétreas (art. 60, §4º, IV, CF/88), sendo vedada qualquer emenda tendente a aboli-los. O devido processo legal (art. 5º, LIV) está protegido contra o poder reformador. O legislador pode regulamentar direitos, mas não suprimi-los."},
+    {e:"A Guarda Municipal está prevista na Constituição Federal no artigo:",o:{A:"Art. 142, que trata das Forças Armadas",B:"Art. 144, §8º, que autoriza os Municípios a constituírem guardas",C:"Art. 37, inciso XV, que trata de servidores públicos",D:"Art. 21, que define competências da União"},c:"B",x:"O art. 144, §8º, da CF/88 prevê expressamente: 'Os Municípios poderão constituir guardas municipais destinadas à proteção de seus bens, serviços e instalações, conforme dispuser a lei.' Esse dispositivo é o fundamento constitucional da Guarda Municipal."},
+  ],
+  dificil:[
+    {e:"O princípio da moralidade administrativa é violado quando o agente público age:",o:{A:"Dentro da legalidade formal, mas com desvio de finalidade pública",B:"Cumprindo estritamente a lei sem exercer discricionariedade",C:"Publicando atos administrativos no Diário Oficial",D:"Aplicando sanções previstas em regulamento interno"},c:"A",x:"O princípio da moralidade não exige apenas legalidade formal — exige que o ato seja ético, honesto e voltado ao interesse público. O desvio de finalidade (usar o poder administrativo para fins privados) viola a moralidade mesmo quando formalmente legal, sendo causa de nulidade do ato administrativo."},
+    {e:"Sobre o controle externo da Administração Pública pelo Congresso Nacional, com auxílio do TCU, é correto afirmar que:",o:{A:"O TCU pode anular contratos administrativos com efeito vinculante pleno",B:"O TCU aprecia a regularidade das contas do Presidente, mas quem julga é o Congresso",C:"O controle externo abrange apenas a legalidade dos atos, excluindo a economicidade",D:"O TCU tem competência para prender servidores que fraudem prestações de contas"},c:"B",x:"O art. 71 da CF/88 atribui ao TCU auxiliar o Congresso no controle externo. O TCU aprecia as contas do Presidente (art. 71, I) emitindo parecer prévio, mas o julgamento é ato privativo do Congresso Nacional (art. 49, IX). O controle abrange legalidade, legitimidade e economicidade (art. 70)."},
+  ]
+},
+
+penal: {
+  facil:[
+    {e:"No Direito Penal, o crime é CONSUMADO quando:",o:{A:"O agente inicia os atos executórios sem chegar ao resultado",B:"Nele se reúnem todos os elementos de sua definição legal",C:"O agente pratica apenas atos preparatórios",D:"Há a intenção criminosa sem qualquer ação"},c:"B",x:"O art. 14, I, do Código Penal define crime consumado como aquele em que se reúnem todos os elementos de sua definição legal (tipicidade objetiva completa). A alternativa A descreve tentativa; C descreve atos preparatórios não puníveis como regra; D descreve mera cogitação, impunível."},
+    {e:"A legítima defesa, como causa de exclusão da ilicitude, exige:",o:{A:"Que o agente seja a única pessoa presente no local",B:"Uso moderado dos meios necessários para repelir injusta agressão atual ou iminente",C:"Que a agressão já tenha ocorrido e o agente queira vingança",D:"Autorização prévia da autoridade policial"},c:"B",x:"O art. 25 do CP define legítima defesa: usar moderadamente dos meios necessários para repelir injusta agressão, atual ou iminente, a direito próprio ou alheio. Os elementos são: agressão injusta + atual ou iminente + uso moderado + meios necessários."},
+    {e:"A desistência voluntária ocorre quando o agente:",o:{A:"Não consegue consumar o crime por circunstâncias alheias à sua vontade",B:"Voluntariamente desiste de prosseguir na execução do crime já iniciada",C:"Pratica o crime mas se arrepende após a consumação",D:"É surpreendido pela vítima antes de iniciar os atos executórios"},c:"B",x:"O art. 15 do CP distingue tentativa (não consegue consumar por circunstâncias alheias) de desistência voluntária (abandona voluntariamente a execução já iniciada). Na desistência voluntária, o agente responde apenas pelos atos já praticados."},
+    {e:"O dolo DIRETO configura-se quando o agente:",o:{A:"Prevê o resultado como possível e assume o risco de produzi-lo",B:"Quer o resultado ou assume conscientemente o risco de produzi-lo como certo",C:"Age sem previsão do resultado lesivo",D:"Prevê o resultado mas confia que não ocorrerá"},c:"B",x:"O art. 18, I, do CP define dolo: quando o agente quis o resultado (dolo direto de 1º grau) ou assumiu o risco de produzi-lo (dolo eventual). O dolo direto de 2º grau abrange consequências necessárias do crime principal. A alternativa A descreve dolo eventual; C é culpa inconsciente; D é culpa consciente."},
+  ],
+  medio:[
+    {e:"O estado de necessidade exclui a ilicitude da conduta quando:",o:{A:"Qualquer bem jurídico está em risco de lesão",B:"O agente sacrifica bem de valor menor para salvar bem maior e não tinha o dever legal de enfrentar o perigo",C:"O agente é coagido fisicamente a praticar o crime",D:"A conduta é praticada em cumprimento de ordem superior"},c:"B",x:"O art. 24 do CP exige para o estado de necessidade: perigo atual; que não tenha causado por vontade própria; inexigibilidade de sacrifício do bem ameaçado; proporcionalidade. Quem tem dever legal de enfrentar o perigo (bombeiro, policial em serviço) não pode alegar estado de necessidade."},
+    {e:"No concurso de crimes, quando duas ou mais infrações são cometidas mediante uma única ação ou omissão, tem-se:",o:{A:"Concurso material, com somatório das penas",B:"Concurso formal, com aplicação da pena mais grave aumentada",C:"Crime continuado, com exasperação da pena mais grave",D:"Crime habitual, exigindo reiteração de condutas"},c:"B",x:"O art. 70 do CP define o concurso formal: quando o agente, mediante uma só ação ou omissão, pratica dois ou mais crimes. A pena do crime mais grave é aumentada de 1/6 até 1/2 (concurso formal próprio), ou as penas são somadas se a conduta é dolosa e produz resultados distintos (concurso formal impróprio)."},
+    {e:"O crime culposo caracteriza-se pela:",o:{A:"Vontade consciente e direta de produzir o resultado",B:"Inobservância do dever de cuidado objetivo com resultado previsível",C:"Aceitação do risco de produzir resultado lesivo",D:"Prática de ato ilícito sem qualquer previsão de consequências"},c:"B",x:"O art. 18, II, do CP define crime culposo: quando o agente deu causa ao resultado por imprudência, negligência ou imperícia. Não há vontade em relação ao resultado — há violação do dever objetivo de cuidado. A alternativa A descreve dolo direto; C descreve dolo eventual."},
+    {e:"No iter criminis, os atos preparatórios são, em regra:",o:{A:"Puníveis como tentativa do crime principal",B:"Impuníveis, salvo quando por si mesmos constituírem crime",C:"Puníveis com metade da pena do crime tentado",D:"Equiparados ao crime consumado quando o agente é reincidente"},c:"B",x:"Os atos preparatórios precedem o início da execução e, como regra geral, são impuníveis no direito penal brasileiro (princípio da não punibilidade da cogitação e preparação). Exceções: quando o próprio ato preparatório configura crime autônomo (ex: petrechos de falsificação — art. 291 CP)."},
+  ],
+  dificil:[
+    {e:"Sobre o erro de proibição inevitável no Direito Penal, é correto afirmar:",o:{A:"O agente conhece a ilicitude mas age por pressão social",B:"Exclui a culpabilidade, não respondendo o agente pelo crime",C:"Reduz a pena do crime em até 1/3",D:"Exclui o dolo, mantendo a responsabilidade culposa"},c:"B",x:"O erro de proibição inevitável (escusável) — em que o agente, por razões invencíveis, não tem consciência da ilicitude — exclui a culpabilidade (art. 21 do CP), isentando o agente de pena. Se evitável, apenas reduz a pena de 1/6 a 1/3. Não confundir com erro de tipo que exclui o dolo."},
+    {e:"O crime permanente, em relação à prisão em flagrante, distingue-se do crime instantâneo porque:",o:{A:"No crime permanente, o flagrante só é possível no ato de início",B:"O estado de flagrância persiste enquanto durar a situação antijurídica",C:"O flagrante é vedado após 24 horas do início da consumação",D:"Somente autoridades policiais podem efetuar a prisão em flagrante"},c:"B",x:"No crime permanente (ex: sequestro, tráfico de drogas com posse contínua), a consumação se protrai no tempo. Por isso, o estado de flagrância subsiste enquanto a situação ilícita perdurar (art. 303 CPP), permitindo a prisão em flagrante a qualquer momento enquanto durar a conduta criminosa."},
+    {e:"No que se refere ao concurso de agentes, a chamada 'teoria monista' adotada pelo Código Penal implica:",o:{A:"Cada agente responde pelo crime que efetivamente praticou, podendo ser crimes distintos",B:"Todos os participantes respondem pelo mesmo crime, com circunstâncias variáveis",C:"Somente o autor principal é punível, sendo o partícipe isento de pena",D:"O crime praticado em concurso tem pena automaticamente dobrada"},c:"B",x:"O art. 29 do CP adota a teoria monista ou unitária: todos que concorrem para o crime incidem nas penas a ele cominadas, na medida de sua culpabilidade. Há um único crime imputado a todos. A teoria pluralista, que atribuiria crimes diferentes a autor e partícipe, foi excepcionalmente adotada em casos como o aborto consentido."},
+  ]
+},
+
+proc: {
+  facil:[
+    {e:"A prisão em flagrante PRÓPRIO ocorre quando o agente é preso:",o:{A:"Poucas horas depois do crime, com instrumentos que o incriminem",B:"Cometendo a infração ou logo após de cometê-la",C:"Sendo perseguido após ter resistido à prisão",D:"Com base em mandado judicial expedido no mesmo dia"},c:"B",x:"O art. 302, I e II, do CPP define o flagrante próprio (ou perfeito): quando o agente está cometendo a infração (I) ou acaba de cometê-la (II). O flagrante impróprio é quando é perseguido; o presumido quando é encontrado com instrumentos do crime."},
+    {e:"O Inquérito Policial tem natureza jurídica de:",o:{A:"Peça processual, com contraditório obrigatório",B:"Procedimento administrativo investigatório, inquisitorial",C:"Ação penal de iniciativa da polícia judiciária",D:"Medida cautelar de natureza processual"},c:"B",x:"O Inquérito Policial é procedimento administrativo, de natureza inquisitorial, presidido pela autoridade policial, sem contraditório pleno, destinado à investigação de infrações penais e de sua autoria para subsidiar a ação penal."},
+    {e:"O Termo Circunstanciado de Ocorrência (TCO) é aplicável às infrações penais de:",o:{A:"Grande potencial ofensivo, por determinação do MP",B:"Menor potencial ofensivo — pena máxima não superior a 2 anos",C:"Médio potencial ofensivo — pena máxima até 4 anos",D:"Qualquer natureza, quando o autor é primário"},c:"B",x:"O TCO, previsto no art. 69 da Lei 9.099/95, aplica-se às infrações de menor potencial ofensivo: contravenções penais e crimes com pena máxima não superior a 2 anos, cumulada ou não com multa. Substitui o auto de prisão em flagrante nesses casos."},
+    {e:"Provas obtidas por meios ilícitos são, nos termos da CF/88:",o:{A:"Admitidas quando a gravidade do crime justificar",B:"Inadmissíveis no processo",C:"Admissíveis se confirmadas por outras provas lícitas",D:"Analisadas pelo juiz com prudência e podendo ser usadas"},c:"B",x:"O art. 5º, LVI, da CF/88 é expresso: 'são inadmissíveis, no processo, as provas obtidas por meios ilícitos.' Essa vedação é absoluta na Constituição, aplicando-se também às provas derivadas das ilícitas (teoria dos frutos da árvore envenenada — arts. 157 CPP)."},
+  ],
+  medio:[
+    {e:"A teoria dos frutos da árvore envenenada (fruit of the poisonous tree), adotada no CPP, determina que:",o:{A:"Apenas a prova ilícita original é inadmissível, sendo as derivadas válidas",B:"As provas derivadas das ilícitas também são inadmissíveis, salvo exceções legais",C:"O juiz pode relativizar provas ilícitas em crimes hediondos",D:"Provas ilícitas são válidas se ratificadas pelo Ministério Público"},c:"B",x:"O art. 157, §1º, do CPP adotou a teoria da árvore dos frutos envenenados: são também inadmissíveis as provas derivadas das ilícitas, salvo quando não evidenciado o nexo de causalidade entre umas e outras, ou quando as derivadas pudessem ser obtidas por fonte independente das primeiras (teoria da fonte independente)."},
+    {e:"Em relação à prisão preventiva, é requisito para sua decretação:",o:{A:"Existência de sentença penal condenatória recorrível",B:"Prova da existência do crime e indício suficiente de autoria",C:"Confissão do acusado perante a autoridade policial",D:"Requerimento exclusivo da vítima ou seus familiares"},c:"B",x:"O art. 312 do CPP exige para a prisão preventiva: prova da existência do crime (prova da materialidade) e indício suficiente de autoria. Além disso, é necessário um dos fundamentos: garantia da ordem pública, ordem econômica, conveniência da instrução criminal ou assegurar aplicação da lei penal."},
+    {e:"Na instrução criminal, a prova pericial é obrigatória nas infrações que:",o:{A:"Envolvam crimes contra o patrimônio",B:"Deixam vestígios materiais",C:"Sejam praticadas por organizações criminosas",D:"Tenham pena superior a 4 anos de reclusão"},c:"B",x:"O art. 158 do CPP determina que quando a infração deixar vestígios, será indispensável o exame de corpo de delito, direto ou indireto, não podendo supri-lo a confissão do acusado. A obrigatoriedade decorre da existência de vestígios, não da gravidade do crime."},
+    {e:"O flagrante preparado ou provocado difere do flagrante esperado porque:",o:{A:"No preparado, a polícia apenas aguarda o crime ocorrer naturalmente",B:"No preparado, agente provocador induz o agente ao crime, tornando-o ilegal",C:"O preparado é mais rigoroso e gera prisão obrigatória",D:"No esperado, a polícia cria artificialmente o crime para prender alguém"},c:"B",x:"O flagrante preparado (crime de ensaio ou provocado) ocorre quando um agente provoca deliberadamente o suspeito à prática do crime para depois prendê-lo. É ilegal (Súmula 145 do STF: não há crime quando a preparação do flagrante pela polícia torna impossível a sua consumação). O flagrante esperado é legítimo: a polícia tem notícia do crime e aguarda sua ocorrência."},
+  ],
+  dificil:[
+    {e:"Sobre o valor probatório da confissão no processo penal brasileiro, é correto afirmar que:",o:{A:"A confissão é a rainha das provas e, isolada, é suficiente para condenação",B:"A confissão é elemento de convicção que deve ser cotejado com as demais provas",C:"A confissão judicial vincula o julgador, que deve condenar obrigatoriamente",D:"A retratação da confissão na fase judicial invalida automaticamente a confissão policial"},c:"B",x:"O CPP adotou o sistema da persuasão racional (livre convencimento motivado). O art. 197 determina que o valor da confissão deve ser aferido com outros meios de prova, verificando se é compatível com as circunstâncias do fato. A retratação (art. 200) não invalida automaticamente — o juiz aprecia livremente."},
+    {e:"O habeas corpus pode ser impetrado para contestar:",o:{A:"Apenas prisão decorrente de sentença condenatória transitada em julgado",B:"Qualquer ilegalidade ou abuso de poder que constranja ou ameace a liberdade de locomoção",C:"Somente atos do Poder Executivo que restrinjam a liberdade individual",D:"Exclusivamente atos praticados por autoridades policiais"},c:"B",x:"O HC (art. 5º, LXVIII, CF/88 e art. 647 CPP) cabe sempre que alguém sofrer ou se achar ameaçado de sofrer violência ou coação em sua liberdade de locomoção, por ilegalidade ou abuso de poder. Abrange atos de qualquer autoridade (judicial, executiva ou policial) e tanto a prisão já efetivada quanto a ameaça."},
+  ]
+},
+
+trans: {
+  facil:[
+    {e:"Conforme o CTB, a habilitação na categoria 'A' autoriza conduzir:",o:{A:"Veículos automotores de 4 rodas, com ou sem reboque",B:"Ciclomotores, motocicletas, motonetas e similares",C:"Ônibus e microônibus para transporte escolar",D:"Veículos de tração animal"},c:"B",x:"O art. 143 do CTB define as categorias de CNH. A categoria A habilita para conduzir ciclomotores, motocicletas, motonetas e similares. A categoria B habilita veículos de 4 rodas. A habilitação para veículos de transporte coletivo exige categorias específicas (D ou E)."},
+    {e:"Segundo o CTB, é infração GRAVÍSSIMA:",o:{A:"Estacionar em local proibido por sinalização",B:"Conduzir veículo sem cinto de segurança",C:"Dirigir veículo sob influência de álcool",D:"Ultrapassar com sinalização de proibição"},c:"C",x:"O art. 165 do CTB tipifica como infração gravíssima dirigir sob influência de álcool ou de qualquer substância psicoativa, com penalidade de multa, suspensão da CNH por 12 meses e retenção do veículo. O cinto de segurança (art. 167) e ultrapassagem proibida (art. 215) também têm gradações específicas."},
+    {e:"O que é 'parar' o veículo, conforme o CTB?",o:{A:"Imobilizar o veículo por tempo superior a um minuto para fins operacionais",B:"Imobilizar o veículo por tempo inferior ao necessário para embarque ou desembarque",C:"Qualquer cessação temporária do movimento do veículo",D:"Imobilizar por necessidade do trânsito ou para cumprimento da legislação"},c:"D",x:"O art. 51 do CTB define 'parar' como imobilização do veículo por tempo inferior ao necessário para embarque ou desembarque de passageiros, devendo o motorista permanecer ao volante. Já 'estacionar' é a imobilização por tempo superior ao necessário. 'Parada obrigatória' é determinada por sinalização ou pela lei."},
+  ],
+  medio:[
+    {e:"Conforme o CTB, o homicídio culposo na direção de veículo automotor tem pena de:",o:{A:"Reclusão de 1 a 3 anos, com suspensão da CNH",B:"Detenção de 2 a 4 anos e suspensão ou proibição de habilitação",C:"Detenção de 6 meses a 2 anos e multa",D:"Reclusão de 4 a 8 anos, considerado crime hediondo"},c:"B",x:"O art. 302 do CTB prevê para o homicídio culposo na direção de veículo automotor: pena de detenção de 2 a 4 anos e suspensão ou proibição de se obter a CNH. As penas são aumentadas se o agente não presta socorro ou se encontra em racha, sob efeito de álcool, ou em faixa de pedestres."},
+    {e:"A CONTRAN 985/2022 (Manual de Fiscalização de Trânsito) classifica a operação de fiscalização eletrônica de velocidade quanto ao funcionamento como:",o:{A:"Somente estática, com equipamentos fixos instalados em suportes permanentes",B:"Estática (fixo ou móvel) e dinâmica (velocidade medida em movimento)",C:"Apenas dinâmica, com viaturas em patrulhamento",D:"Exclusivamente por radar de bandeira fixado nas vias"},c:"B",x:"A CONTRAN 985/2022 classifica os sistemas de medição de velocidade em: estáticos (equipamento posicionado e veículo em movimento — radar fixo ou móvel) e dinâmicos (equipamento e veículo em movimento simultâneo). Cada modalidade tem requisitos específicos de instalação e operação."},
+    {e:"O condutor que se recusar a se submeter ao teste de alcoolemia ou exame toxicológico terá como penalidade:",o:{A:"Apenas multa, sem suspensão da CNH",B:"Multa, retenção do veículo e suspensão da CNH por 12 meses",C:"Pena de detenção de 6 meses a 1 ano",D:"Advertência na primeira recusa e multa na segunda"},c:"B",x:"O art. 165-A do CTB, incluído pela Lei 12.760/2012, prevê para recusa do teste: multa de R$ 2.934,70 (10 vezes a da infração do art. 165), retenção do veículo até apresentação de condutor habilitado e suspenso da CNH por 12 meses. A negativa equivale, para efeitos administrativos, à constatação do uso."},
+  ],
+  dificil:[
+    {e:"Sobre as infrações de trânsito, o agente de trânsito pode autuar por infração cometida na presença do agente ou por equipamento. Uma infração registrada por câmera de videomonitoramento sem equipamento de medição é considerada:",o:{A:"Inválida, pois exige medição técnica certificada pelo INMETRO",B:"Válida como flagrante de agente de trânsito se a câmera comprova visualmente a infração",C:"Válida apenas para multa, sem apreensão do veículo",D:"Passível de recurso automático por ausência de notificação pessoal"},c:"B",x:"A videomonitoramento pode embasar autuação por infrações verificáveis visualmente (semáforo, conversão proibida, etc.), pois o agente de trânsito atua com base nas imagens que comprovam a infração, na forma de flagrante virtual. Isso é diferente da medição de velocidade, que exige equipamento metrológico certificado pelo INMETRO."},
+    {e:"No crime de lesão corporal culposa na direção de veículo (art. 303, CTB), a pena é aumentada se o agente:",o:{A:"Não possui antecedentes criminais mas é reincidente em infrações de trânsito",B:"Deixa de prestar imediato socorro à vítima, salvo risco pessoal",C:"Possui CNH vencida há menos de 30 dias",D:"O veículo é de propriedade de pessoa jurídica"},c:"B",x:"O art. 303, §1º, do CTB prevê aumento de pena de 1/3 à metade nas lesões culposas de trânsito quando o agente: não possuir CNH ou habilitação; praticar em faixa de pedestres; cometer em passagem para pedestres com sinalização; deixar de prestar socorro imediato (salvo risco pessoal); ou conduzir sob efeito de álcool ou psicoativos."},
+  ]
+},
+
+port: {
+  facil:[
+    {e:"Assinale a alternativa em que o emprego da CRASE está CORRETO:",o:{A:"Fui à Paris aprender francês.",B:"O Guarda Municipal atende às segundas e quartas.",C:"Vou à comprar o material do curso.",D:"Ele se referiu à ele diretamente."},c:"B",x:"Crase ocorre pela fusão da preposição 'a' com o artigo 'a(s)' diante de substantivo feminino. Em 'às segundas e quartas': preposição 'a' + artigo 'as' = às (correto). Em A, nomes de cidades estrangeiras não recebem artigo; em C, não há crase antes de verbos; em D, não há crase antes de pronomes pessoais do caso reto."},
+    {e:"Em 'Os guardas municipais cumpriram seus deveres com diligência', o sujeito da oração é:",o:{A:"seus deveres",B:"com diligência",C:"Os guardas municipais",D:"cumpriram"},c:"C",x:"O sujeito é o ser sobre o qual se declara algo — concorda com o verbo em número e pessoa. 'Os guardas municipais' é o sujeito simples e determinado da oração, pois é sobre eles que se predica a ação de cumprir. 'Seus deveres' é objeto direto; 'com diligência' é adjunto adverbial."},
+    {e:"Assinale a alternativa com ORTOGRAFIA correta conforme o Acordo Ortográfico vigente:",o:{A:"cidadão, excção, correto",B:"cidadão, exceção, correto",C:"cídadão, exceção, correto",D:"cidadão, excessão, correto"},c:"B",x:"'Cidadão' — acento no ditongo tônico ão; 'exceção' — grafia correta sem duplo 'c' ou 'ss'; 'correto' — com 'rr' por estar entre vogais. A alternativa B apresenta todas as grafias corretas conforme o Vocabulário Ortográfico da Língua Portuguesa (VOLP)."},
+  ],
+  medio:[
+    {e:"Na frase 'Deve haver mais vagas para guardas municipais', o verbo HAVER está empregado como:",o:{A:"Verbo auxiliar no pretérito imperfeito do subjuntivo",B:"Verbo impessoal no sentido de 'existir', não podendo ser flexionado",C:"Verbo pessoal concordando com o sujeito 'vagas'",D:"Verbo de ligação estabelecendo predicado nominal"},c:"B",x:"O verbo 'haver' no sentido de 'existir' é impessoal — não tem sujeito e fica sempre na 3ª pessoa do singular: 'há vagas', 'havia vagas', 'houve vagas'. É erro comum flexioná-lo no plural. Diferente do verbo 'ter' pessoal (a escola tem vagas) que concorda normalmente."},
+    {e:"Assinale a frase com CONCORDÂNCIA NOMINAL correta:",o:{A:"As candidatas foram considerados aptas para a função.",B:"Os servidores públicos são obrigados a declarar seus bens.",C:"A guarda municipal e o policial militar foi convocados.",D:"Os laudos médicos foi entregues na data prevista."},c:"B",x:"Em B, 'obrigados' concorda corretamente com 'Os servidores públicos' (masculino plural). Em A, 'considerados' deveria ser 'consideradas' (feminino plural); em C, sujeito composto exige verbo no plural 'foram convocados'; em D, 'foi' deveria ser 'foram' para concordar com 'laudos'."},
+    {e:"A regência verbal CORRETA está em:",o:{A:"O guarda informou aos moradores que havia riscos.",B:"O guarda informou os moradores que havia riscos.",C:"O guarda informou com os moradores que havia riscos.",D:"O guarda informou para os moradores os riscos."},c:"A",x:"O verbo 'informar' tem dois padrões de regência: informar algo a alguém (informar os riscos aos moradores) ou informar alguém de algo (informar os moradores dos riscos). Em A, a construção 'informou aos moradores que...' (onde 'aos moradores' é o objeto indireto e a oração substantiva é o objeto direto) está correta."},
+    {e:"Em relação à pontuação, assinale a alternativa CORRETA:",o:{A:"O candidato que estudar; terá mais chances de aprovação.",B:"O candidato, que estudar, terá mais chances de aprovação.",C:"O candidato que estudar terá mais chances de aprovação.",D:"O candidato, que estudar terá, mais chances de aprovação."},c:"C",x:"A oração adjetiva restritiva NÃO é separada por vírgulas, pois restringe o sentido do antecedente (indica qual candidato terá mais chances). A oração adjetiva explicativa, que traz informação acessória sobre todos os elementos do antecedente, é separada por vírgulas. Em B, as vírgulas indicariam que todos os candidatos estudarão (sentido explicativo)."},
+  ],
+  dificil:[
+    {e:"Na frase 'Assistiram ao concurso muitos candidatos esperançosos', a análise sintática correta é:",o:{A:"Sujeito: muitos candidatos esperançosos; predicado verbal: assistiram ao concurso",B:"Sujeito: ao concurso; predicado: assistiram muitos candidatos esperançosos",C:"Sujeito desinencial; objeto direto: muitos candidatos; objeto indireto: ao concurso",D:"Sujeito indeterminado; verbo transitivo direto: assistiram"},c:"A",x:"O verbo 'assistir' com sentido de 'presenciar' é transitivo indireto (rege preposição 'a'): assistir a algo. 'Ao concurso' é o objeto indireto. 'Muitos candidatos esperançosos' é o sujeito simples posposto (invertido), pois concorda com o verbo. A inversão do sujeito é recurso estilístico comum na língua culta."},
+    {e:"Sobre o uso do HÍFEN após prefixos, qual alternativa apresenta grafia CORRETA pelo Acordo Ortográfico de 2009?",o:{A:"anti-inflamatório, coautor, semi-árido",B:"anti-inflamatório, co-autor, semiárido",C:"antiinflamatório, coautor, semiárido",D:"anti-inflamatório, coautor, semiárido"},c:"D",x:"Regras do Acordo de 2009: usa-se hífen quando o prefixo termina em vogal e o segundo elemento começa com a mesma vogal (anti-inflamatório: 'i' + 'i'); não usa-se hífen quando terminações e inícios são diferentes (coautor: 'o' + 'a'); semiárido: prefixo 'semi' + palavra iniciada por 'á' — há acento mas não há duplicação, sem hífen."},
+  ]
+},
+
+geo: {
+  facil:[
+    {e:"Qual famoso fenômeno natural ocorre próximo a Manaus, onde dois rios correm lado a lado sem se misturar?",o:{A:"Pororoca",B:"Encontro das Águas",C:"Fenômeno das Cheias",D:"Arquipélago de Anavilhanas"},c:"B",x:"O Encontro das Águas, no Rio Negro com o Rio Solimões, é um dos fenômenos mais conhecidos da Amazônia. As águas escuras (tânicas) do Rio Negro correm lado a lado com as barrento-amareladas do Solimões por cerca de 6 km sem se misturar, devido à diferença de temperatura, velocidade e densidade."},
+    {e:"Manaus é conhecida como 'Cidade da Floresta' e está localizada no estado:",o:{A:"Pará",B:"Roraima",C:"Amazonas",D:"Rondônia"},c:"C",x:"Manaus é a capital do Estado do Amazonas, o maior estado brasileiro em extensão territorial. Está localizada na confluência dos rios Negro e Solimões, no coração da Amazônia. O Amazonas é o maior estado em área e um dos mais ricos em biodiversidade."},
+    {e:"O Teatro Amazonas, símbolo cultural de Manaus, foi inaugurado durante o ciclo econômico da:",o:{A:"Castanha e pesca",B:"Borracha",C:"Mineração de ouro",D:"Soja e pecuária"},c:"B",x:"O Teatro Amazonas foi inaugurado em 1896, no auge do ciclo da borracha (1850-1912), período de grande prosperidade econômica que transformou Manaus numa das cidades mais ricas do Brasil. Construído com materiais importados da Europa, é símbolo da Belle Époque amazônica."},
+  ],
+  medio:[
+    {e:"A Zona Franca de Manaus foi criada em 1967 com o objetivo de:",o:{A:"Atrair turismo ecológico para a Amazônia",B:"Promover o desenvolvimento econômico com incentivos fiscais na região",C:"Proteger as fronteiras do Brasil com países vizinhos",D:"Facilitar a exportação de produtos naturais amazônicos"},c:"B",x:"A Zona Franca de Manaus foi criada pelo Decreto-Lei 288/1967 para criar no interior da Amazônia um centro industrial, comercial e agropecuário com incentivos fiscais especiais, visando integrar a região ao restante do país e fixar população na Amazônia Ocidental."},
+    {e:"O Rio Amazonas é considerado o maior do mundo em:",o:{A:"Extensão linear, superando o Nilo",B:"Volume de água (descarga fluvial)",C:"Número de afluentes diretos",D:"Velocidade de correnteza"},c:"B",x:"O Rio Amazonas é o maior do mundo em volume de água (vazão), respondendo por aproximadamente 20% da água doce que desemboca nos oceanos. Em extensão, há disputa com o Nilo, mas estudos recentes apontam que o Amazonas também pode ser o mais longo quando consideradas suas nascentes no Peru."},
+    {e:"O Museu do Seringal Vila Paraíso, em Manaus, preserva a memória de qual período histórico?",o:{A:"Ciclo do guaraná e do cacau",B:"Era da borracha e exploração do seringueiro",C:"Período da colonização portuguesa no Amazonas",D:"Conflitos da Cabanagem no século XIX"},c:"B",x:"O Museu do Seringal Vila Paraíso, localizado no Rio Negro a 15 km de Manaus, é uma reconstituição fiel de um seringal dos séculos XIX e XX. Preserva a memória do período áureo da borracha e as difíceis condições de vida dos seringueiros e suas famílias."},
+  ],
+  dificil:[
+    {e:"O fenômeno das 'enchentes' e 'vazantes' do Rio Amazonas em Manaus está relacionado principalmente a:",o:{A:"Marés oceânicas que influenciam o rio até Manaus",B:"Regime pluviométrico diferenciado das cabeceiras andinas e da planície amazônica",C:"Abertura e fechamento de comportas hidrelétricas no Peru",D:"Ciclos solares que afetam a evapotranspiração amazônica"},c:"B",x:"O ciclo de cheia e vazante do Amazonas resulta do regime de chuvas diferenciado nas cabeceiras andinas (onde o ciclo pluvial é distinto do brasileiro) e na planície amazônica. A cheia em Manaus ocorre tipicamente de março a julho, com variação de nível que pode ultrapassar 10 metros, afetando populações ribeirinhas."},
+    {e:"A população de Manaus é marcada pela diversidade étnica. Qual grupo étnico ORIGINÁRIO da região amazônica deu nome ao rio que corta a cidade?",o:{A:"Tupinambás, que chamavam o rio de 'Água Grande'",B:"Manáos, povo indígena que habitava as margens do rio que leva seu nome",C:"Omáguas, que denominavam o rio de 'Solimões'",D:"Muras, que nomearam o rio como 'Negro' pela cor escura"},c:"B",x:"A cidade de Manaus recebe seu nome do povo indígena Manáos (ou Manaós), que habitava as margens do Rio Negro antes da colonização portuguesa. O povo era conhecido pela resistência à colonização. O Rio Negro recebe esse nome pela coloração escura de suas águas, rica em ácidos húmicos."},
+  ]
+},
+
+info: {
+  facil:[
+    {e:"O atalho Ctrl+C no Windows serve para:",o:{A:"Fechar uma janela aberta",B:"Copiar o item selecionado",C:"Colar um conteúdo copiado",D:"Desfazer a última ação"},c:"B",x:"Os atalhos básicos do Windows: Ctrl+C = Copiar; Ctrl+X = Recortar; Ctrl+V = Colar; Ctrl+Z = Desfazer; Ctrl+Y = Refazer; Ctrl+A = Selecionar tudo; Alt+F4 = Fechar janela. São fundamentais para produtividade no uso do sistema operacional."},
+    {e:"O que é um vírus de computador?",o:{A:"Um programa que otimiza o desempenho do computador",B:"Um software malicioso que se replica e causa danos ao sistema",C:"Uma falha no hardware que causa travamentos",D:"Um arquivo corrompido por queda de energia"},c:"B",x:"Um vírus de computador é um tipo de malware que se insere em arquivos legítimos e se replica quando executado, podendo causar danos ao sistema, excluir arquivos, roubar dados ou comprometer o desempenho. Diferencia-se de outros malwares pela capacidade de auto-replicação."},
+    {e:"O que significa a sigla 'HTTP' em navegação na internet?",o:{A:"Hypertext Transfer Protocol",B:"High Text Transfer Process",C:"Home Transfer Text Program",D:"Hyperlink Transfer Technical Process"},c:"A",x:"HTTP (HyperText Transfer Protocol) é o protocolo de comunicação utilizado para transferência de dados na World Wide Web. O HTTPS é a versão segura, com criptografia SSL/TLS. Ambos definem como mensagens são formatadas e transmitidas entre navegador e servidor."},
+  ],
+  medio:[
+    {e:"Em segurança da informação, o ataque de PHISHING consiste em:",o:{A:"Infectar o computador com software que monitora as teclas digitadas",B:"Enganar o usuário para obter informações confidenciais por meio de mensagens falsas",C:"Sobrecarregar servidores com excesso de requisições",D:"Criptografar arquivos e exigir resgate para liberá-los"},c:"B",x:"Phishing ('pescaria') é a técnica de engenharia social que usa e-mails, mensagens ou sites falsos que imitam entidades confiáveis (bancos, governo) para induzir o usuário a revelar senhas, dados de cartão ou instalar malware. A alternativa A descreve keylogger; C descreve DDoS; D descreve ransomware."},
+    {e:"No Microsoft Excel, a fórmula '=SOMA(A1:A10)' calcula:",o:{A:"A média aritmética dos valores de A1 a A10",B:"A soma de todos os valores no intervalo de A1 até A10",C:"O maior valor entre A1 e A10",D:"O produto dos valores de A1 multiplicados por A10"},c:"B",x:"A função SOMA() no Excel realiza a adição de todos os valores no intervalo especificado. A notação A1:A10 indica o intervalo de A1 até A10 inclusive. Outras funções: =MÉDIA() para média aritmética; =MÁXIMO() para o maior valor; =MÍNIMO() para o menor."},
+    {e:"O conceito de 'computação em nuvem' (cloud computing) refere-se a:",o:{A:"Processamento de dados exclusivamente em supercomputadores locais",B:"Uso de recursos computacionais remotos disponibilizados via internet",C:"Armazenamento de dados apenas em pen drives criptografados",D:"Conexão de computadores por rede Wi-Fi de alta velocidade"},c:"B",x:"Cloud computing é o modelo de entrega de serviços de TI (armazenamento, processamento, software) por meio da internet, com pagamento por uso. Os dados e processos ficam em servidores remotos de provedores (AWS, Azure, Google Cloud), acessíveis de qualquer dispositivo conectado."},
+  ],
+  dificil:[
+    {e:"O protocolo HTTPS utiliza TLS/SSL para garantir a segurança da comunicação. Qual propriedade de segurança ele NÃO garante por si só?",o:{A:"Confidencialidade dos dados transmitidos",B:"Integridade dos dados durante a transmissão",C:"Autenticidade do servidor por meio de certificado",D:"Autenticidade da identidade real do proprietário do site"},c:"D",x:"O HTTPS com TLS garante: confidencialidade (criptografia dos dados), integridade (detecta alterações), autenticação do servidor (certificado digital). Porém, um certificado SSL pode ser emitido para um site de phishing — garante que você está falando com o servidor correto, mas não que o site é legítimo ou confiável do ponto de vista de negócio."},
+    {e:"Em redes de computadores, a diferença entre um HUB e um SWITCH é que:",o:{A:"O hub opera na camada 3 do modelo OSI e o switch na camada 2",B:"O switch encaminha dados apenas para a porta de destino; o hub replica para todas as portas",C:"O hub oferece mais segurança por não broadcast",D:"O switch não suporta conexões com fio, apenas Wi-Fi"},c:"B",x:"O HUB (camada 1 — física) retransmite os dados recebidos para todas as portas indiscriminadamente (broadcast), gerando colisões. O SWITCH (camada 2 — enlace) aprende os endereços MAC e encaminha os quadros apenas para a porta de destino correspondente, aumentando eficiência e segurança da rede."},
+  ]
+},
+
+etica: {
+  facil:[
+    {e:"A Declaração Universal dos Direitos Humanos foi adotada pela ONU em qual ano?",o:{A:"1945",B:"1948",C:"1966",D:"1988"},c:"B",x:"A DUDH foi proclamada pela Assembleia Geral da ONU em 10 de dezembro de 1948, em Paris, pela Resolução 217 A (III). Surgiu como resposta às atrocidades da Segunda Guerra Mundial e estabeleceu pela primeira vez um conjunto de direitos fundamentais universais."},
+    {e:"O Estatuto da Igualdade Racial (Lei 12.288/2010) tem como objetivo garantir:",o:{A:"Cotas raciais em todas as empresas privadas",B:"Igualdade de oportunidades e defesa dos direitos da população negra",C:"A criação de territórios autônomos para comunidades quilombolas",D:"Punição exclusiva de crimes de racismo cometidos por agentes públicos"},c:"B",x:"O Estatuto da Igualdade Racial (Lei 12.288/2010) visa garantir à população negra a efetivação da igualdade de oportunidades, a defesa dos direitos étnicos e o combate à discriminação e às demais formas de intolerância étnica, em harmonia com os princípios da CF/88."},
+    {e:"A prática, indução ou incitação à discriminação por motivo de raça, cor ou etnia é tipificada na:",o:{A:"Lei 12.288/2010 — Estatuto da Igualdade Racial",B:"Lei 7.716/1989 — Lei de Crimes de Preconceito",C:"Lei 13.869/2019 — Lei de Abuso de Autoridade",D:"Lei 8.072/1990 — Lei de Crimes Hediondos"},c:"B",x:"A Lei 7.716/1989 define os crimes resultantes de preconceito de raça ou de cor. O art. 20 pune a prática, indução ou incitação à discriminação com reclusão de 1 a 3 anos e multa. A Lei Caó (como é conhecida) foi ampliada pela Lei 9.459/1997 para incluir etnia, religião e procedência nacional."},
+  ],
+  medio:[
+    {e:"A Convenção Americana sobre Direitos Humanos (Pacto de São José da Costa Rica) foi internalizada no Brasil pelo:",o:{A:"Decreto 678/1992, com hierarquia supralegal",B:"Decreto Legislativo 27/1992, com hierarquia constitucional",C:"Lei ordinária 9.612/1998, como norma comum",D:"Emenda Constitucional 45/2004, incorporando ao art. 5º da CF"},c:"A",x:"O Brasil ratificou o Pacto de São José da Costa Rica pelo Decreto 678/1992. O STF, no julgamento do RE 349.703, consolidou o entendimento de que tratados internacionais de direitos humanos não aprovados com quorum qualificado (art. 5º, §3º, CF) têm hierarquia supralegal (acima das leis ordinárias, abaixo da Constituição)."},
+    {e:"O Código de Conduta Ética do Agente Público e da Alta Administração do Município de Manaus, instituído pelo Decreto Municipal 6.153/2025, destina-se a:",o:{A:"Regular apenas servidores de carreira do quadro efetivo",B:"Estabelecer padrões éticos de conduta para todos os agentes públicos municipais",C:"Punir exclusivamente agentes de segurança pública por desvio de conduta",D:"Substituir o processo administrativo disciplinar por termo de ajuste de conduta"},c:"B",x:"O Decreto Municipal 6.153/2025 institui o Código de Conduta Ética aplicável a todos os agentes públicos e membros da alta administração do Município de Manaus, estabelecendo princípios, deveres e vedações éticas no exercício da função pública, independentemente do tipo de vínculo."},
+    {e:"Qual dos seguintes NÃO é um princípio previsto na Declaração Universal dos Direitos Humanos de 1948?",o:{A:"Toda pessoa tem direito ao trabalho e à livre escolha do emprego",B:"Toda pessoa tem direito à privacidade e à correspondência inviolável",C:"Todo Estado tem direito soberano de limitar direitos civis em situações de conflito interno",D:"Toda pessoa tem direito a um padrão de vida capaz de assegurar saúde e bem-estar"},c:"C",x:"A DUDH não prevê o 'direito soberano dos Estados' de limitar direitos civis — ao contrário, ela limita a soberania estatal em defesa dos direitos individuais. Os demais estão previstos: trabalho (art. 23), privacidade (art. 12), padrão de vida adequado (art. 25). A DUDH é de aplicação universal e hierarquicamente superior à soberania nos direitos humanos."},
+  ],
+  dificil:[
+    {e:"Segundo o Pacto de São José da Costa Rica (CADH), a Corte Interamericana de Direitos Humanos pode ser acionada:",o:{A:"Diretamente por qualquer cidadão de país-membro contra seu Estado",B:"Apenas pela Comissão Interamericana ou por Estados-parte que reconhecerem a competência da Corte",C:"Por qualquer organização não-governamental registrada na OEA",D:"Exclusivamente pelo Secretário-Geral da OEA mediante requerimento formal"},c:"B",x:"O sistema interamericano de DH prevê que a Corte IDH só pode ser acionada pela Comissão Interamericana de DH (após esgotamento dos recursos internos e procedimento perante a Comissão) ou por Estados-parte que tenham reconhecido explicitamente a competência contenciosa da Corte. O cidadão peticiona à Comissão, não à Corte diretamente."},
+    {e:"O princípio da universalidade dos direitos humanos é contestado pela corrente do relativismo cultural, que defende:",o:{A:"Que os direitos humanos são válidos universalmente sem exceção",B:"Que os direitos devem ser interpretados conforme os valores culturais de cada sociedade",C:"Que apenas os direitos civis e políticos são universais",D:"Que organismos internacionais têm supremacia sobre os Estados nacionais"},c:"B",x:"O relativismo cultural argumenta que valores, normas e direitos são produtos de contextos histórico-culturais específicos, e que impor uma visão universalista seria uma forma de imperialismo cultural. Essa posição contrasta com o universalismo que fundamenta a DUDH. O debate é central na filosofia dos direitos humanos, especialmente em questões como pena de morte, direitos das mulheres e práticas religiosas."},
+  ]
+}
+};
+
+// ══════════════════════════════════════════════════════
+//  MATÉRIAS
+// ══════════════════════════════════════════════════════
+const MATS = [
+  {id:'leg',     n:'Legislação Específica',   i:'⚖️', p:30},
+  {id:'const_',  n:'Direito Constitucional',  i:'🏛️', p:10},
+  {id:'penal',   n:'Direito Penal',            i:'🔨', p:7.5},
+  {id:'proc',    n:'Dir. Processual Penal',    i:'📋', p:7.5},
+  {id:'trans',   n:'Legislação de Trânsito',   i:'🚦', p:7.5},
+  {id:'port',    n:'Língua Portuguesa',        i:'📝', p:15},
+  {id:'geo',     n:'Geo & Hist. Manaus',       i:'🌊', p:7.5},
+  {id:'info',    n:'Informática',              i:'💻', p:7.5},
+  {id:'etica',   n:'Ética e Dir. Humanos',     i:'🤝', p:7.5},
+];
+
+// ══════════════════════════════════════════════════════
+//  ESTADO
+// ══════════════════════════════════════════════════════
+let cur = null;   // matéria atual
+let curQ = null;  // questão atual
+let answered = false;
+let sC = 0, sT = 0;  // acertos e total da sessão
+
+// ── Persistência ──
+const getS  = () => { try { return JSON.parse(localStorage.getItem('gm4')||'{}'); } catch { return {}; } };
+const putS  = d => localStorage.setItem('gm4', JSON.stringify(d));
+const getSt = id => { const a = getS(); return a[id] || {tot:0, cor:0, qHist:[]}; };
+
+function record(id, qKey, ok) {
+  const a = getS();
+  if (!a[id]) a[id] = {tot:0, cor:0, qHist:[]};
+  a[id].tot++;
+  if (ok) a[id].cor++;
+  // Histórico das últimas 30 questões respondidas (por chave)
+  a[id].qHist.push(qKey);
+  if (a[id].qHist.length > 30) a[id].qHist.shift();
+  putS(a);
+  renderNav(); renderSide();
+}
+
+// Streak
+const getStk = () => {
+  try {
+    const s = JSON.parse(localStorage.getItem('gm4stk') || '{"n":0,"d":""}');
+    const t = new Date().toDateString(), y = new Date(Date.now()-86400000).toDateString();
+    return (s.d===t||s.d===y) ? s : {n:0,d:''};
+  } catch { return {n:0,d:''}; }
+};
+const touchStk = () => {
+  const s=getStk(), t=new Date().toDateString(), y=new Date(Date.now()-86400000).toDateString();
+  if(s.d===t) return;
+  s.n = s.d===y ? s.n+1 : 1; s.d=t;
+  localStorage.setItem('gm4stk', JSON.stringify(s));
+};
+
+// ══════════════════════════════════════════════════════
+//  LÓGICA DE SELEÇÃO ADAPTATIVA
+// ══════════════════════════════════════════════════════
+function calcDiff(id) {
+  const st = getSt(id);
+  if (st.tot < 3) return 'facil';
+  const rate = st.cor / st.tot;
+  if (rate >= 0.75) return 'dificil';
+  if (rate >= 0.50) return 'medio';
+  return 'facil';
+}
+
+function pickQ(id) {
+  const pool = BANCO[id];
+  if (!pool) return null;
+  const diff = calcDiff(id);
+  const st = getSt(id);
+  const seen = st.qHist || [];
+
+  // Tenta pegar questão do nível calculado que ainda não foi vista recentemente
+  let candidates = (pool[diff] || []).filter(q => !seen.includes(qKey(q)));
+
+  // Se todas já foram vistas, relaxa o filtro (mostra mesmo já vistas)
+  if (candidates.length === 0) {
+    candidates = pool[diff] || [];
+  }
+
+  // Se o nível atual está vazio, tenta outro nível
+  if (candidates.length === 0) {
+    const fallbacks = ['facil','medio','dificil'].filter(d => d !== diff);
+    for (const d of fallbacks) {
+      if ((pool[d]||[]).length > 0) { candidates = pool[d]; break; }
+    }
+  }
+
+  if (candidates.length === 0) return null;
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+const qKey = q => q.e.slice(0,32);
+
+// ══════════════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════════════
+function renderNav() {
+  const el = document.getElementById('nav-list');
+  el.innerHTML = '';
+  MATS.forEach(m => {
+    const st = getSt(m.id);
+    const pct = st.tot > 0 ? Math.round(st.cor/st.tot*100) : 0;
+    const on = cur?.id === m.id ? 'on' : '';
+    const d = document.createElement('div');
+    d.innerHTML = `
+      <div class="ni ${on}" onclick="selMat('${m.id}')">
+        <span class="ni-ico">${m.i}</span>
+        <span class="ni-nm">${m.n}</span>
+        <span class="ni-ct">${st.tot > 0 ? pct+'%' : m.p+'pts'}</span>
+      </div>
+      ${st.tot > 0 ? `<div class="pb-mini"><div class="pb-fill" style="width:${pct}%"></div></div>` : ''}`;
+    el.appendChild(d);
+  });
+}
+
+function renderSide() {
+  const a = getS();
+  let tot=0, cor=0;
+  Object.values(a).forEach(s => { tot+=s.tot; cor+=s.cor; });
+  document.getElementById('sid-tot').textContent = tot;
+  document.getElementById('sid-pct').textContent = tot > 0 ? Math.round(cor/tot*100)+'%' : '—';
+}
+
+function renderStk() {
+  const s = getStk();
+  const el = document.getElementById('stk-area');
+  el.innerHTML = s.n > 0 ? `<div class="streak">🔥 ${s.n} dia${s.n>1?'s':''}</div>` : '';
+}
+
+function updateDiffMeter(id) {
+  const d = calcDiff(id);
+  const meter = document.getElementById('diff-meter');
+  const lbl = document.getElementById('diff-lbl');
+  meter.style.display = 'flex';
+  document.getElementById('d1').className = 'diff-dot' + (d!=='' ? ' active-easy' : '');
+  document.getElementById('d2').className = 'diff-dot' + (d==='medio'||d==='dificil' ? ' active-med' : '');
+  document.getElementById('d3').className = 'diff-dot' + (d==='dificil' ? ' active-hard' : '');
+  lbl.textContent = d==='facil'?'Fácil':d==='medio'?'Médio':'Difícil';
+  lbl.style.color = d==='facil'?'var(--green)':d==='medio'?'var(--orange)':'var(--red)';
+}
+
+// ══════════════════════════════════════════════════════
+//  AÇÕES
+// ══════════════════════════════════════════════════════
+function selMat(id) {
+  cur = MATS.find(m => m.id === id);
+  sC = 0; sT = 0;
+  renderNav();
+  document.getElementById('tb-title').textContent = cur.n;
+  document.getElementById('tb-sub').textContent = `${cur.i} ${cur.p} pontos na prova`;
+  document.getElementById('btn-new').style.display = 'inline-block';
+  document.getElementById('btn-skip').style.display = 'inline-block';
+  updateDiffMeter(cur.id);
+  loadQ();
+}
+
+function loadQ() {
+  if (!cur) return;
+  answered = false;
+
+  const q = pickQ(cur.id);
+  if (!q) {
+    document.getElementById('content').innerHTML =
+      `<div class="empty"><h3>Sem questões disponíveis</h3><p>Banco em construção para esta matéria.</p></div>`;
+    return;
+  }
+  curQ = q;
+  const diff = q.dificuldade || calcDiff(cur.id);
+  const st = getSt(cur.id);
+  const pct = st.tot > 0 ? Math.round(st.cor/st.tot*100) : null;
+  const diffMap = {facil:'fácil', medio:'médio', dificil:'difícil'};
+
+  // Detecta nível da questão pelo pool
+  let qDiff = 'facil';
+  if ((BANCO[cur.id]?.medio||[]).some(x=>x.e===q.e)) qDiff='medio';
+  if ((BANCO[cur.id]?.dificil||[]).some(x=>x.e===q.e)) qDiff='dificil';
+
+  const tagDiff = qDiff==='facil'?'tag-easy':qDiff==='medio'?'tag-med':'tag-hard';
+  const diffLbl = diffMap[qDiff];
+
+  const opts = ['A','B','C','D'].map(l => `
+    <div class="option" id="opt-${l}" onclick="pick('${l}')">
+      <div class="opt-letter">${l}</div>
+      <div>${q.o[l]||''}</div>
+    </div>`).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="q-header">
+      <span class="tag tag-sub">${cur.i} ${cur.n}</span>
+      <span class="tag ${tagDiff}">${diffLbl}</span>
+      ${pct!==null ? `<span class="tag tag-neu">${pct}% na matéria · ${st.tot} feitas</span>` : ''}
+      <span class="q-num">Sessão ${sC}/${sT}</span>
+    </div>
+    <div class="qcard" id="qcard">
+      <div class="q-text">${q.e}</div>
+      <div class="options">${opts}</div>
+      <div class="feedback" id="fb"></div>
+      <div class="q-actions">
+        <button class="btn btn-ghost" onclick="loadQ()" id="btn-prox" style="display:none">Próxima questão →</button>
+      </div>
+    </div>`;
+
+  updateDiffMeter(cur.id);
+}
+
+function pick(l) {
+  if (answered || !curQ) return;
+  answered = true;
+  const ok = l === curQ.c;
+  sT++; if (ok) sC++;
+  record(cur.id, qKey(curQ), ok);
+  touchStk(); renderStk();
+
+  document.querySelectorAll('.option').forEach(o => o.classList.add('locked'));
+  document.getElementById(`opt-${curQ.c}`).classList.add('correct');
+  if (!ok) document.getElementById(`opt-${l}`).classList.add('wrong');
+  document.getElementById('qcard').classList.add('answered');
+
+  const fb = document.getElementById('fb');
+  fb.className = `feedback show ${ok ? 'fb-ok' : 'fb-ng'}`;
+  fb.innerHTML = `<strong>${ok ? '✓ Correto!' : '✗ Incorreto — Gabarito: ' + curQ.c}</strong>${curQ.x}`;
+  document.getElementById('btn-prox').style.display = 'inline-block';
+
+  toast(ok ? '✓ Acertou!' : '✗ Errou', ok ? 't-ok' : 't-ng');
+  updateDiffMeter(cur.id);
+}
+
+function showDash() {
+  cur = null; renderNav();
+  document.getElementById('tb-title').textContent = 'Meu Desempenho';
+  document.getElementById('tb-sub').textContent = 'Progresso por matéria';
+  document.getElementById('btn-new').style.display = 'none';
+  document.getElementById('btn-skip').style.display = 'none';
+  document.getElementById('diff-meter').style.display = 'none';
+
+  const a = getS(); let tot=0, cor=0;
+  Object.values(a).forEach(s => { tot+=s.tot; cor+=s.cor; });
+  const gp = tot > 0 ? Math.round(cor/tot*100) : 0;
+  const stk = getStk();
+  const ns = Object.keys(a).filter(k=>a[k].tot>0).length;
+  const tr = tot===0 ? 'Nenhuma questão respondida ainda.' :
+    gp>=70 ? '🟢 Ótimo! A IA vai gerar mais questões difíceis.' :
+    gp>=60 ? '🟡 No limiar. Reforce os pontos fracos.' : '🔴 Abaixo de 60%. Intensifique os estudos.';
+
+  const diffMap = (id) => {
+    const d = calcDiff(id);
+    return d==='facil'?`<span style="color:var(--green);font-size:11px">📗 Fácil</span>`:
+           d==='medio'?`<span style="color:var(--orange);font-size:11px">📙 Médio</span>`:
+           `<span style="color:var(--red);font-size:11px">📕 Difícil</span>`;
+  };
+
+  const spHtml = MATS.map(m => {
+    const st = getSt(m.id);
+    const p = st.tot > 0 ? Math.round(st.cor/st.tot*100) : 0;
+    const col = p>=70?'var(--green)':p>=50?'var(--orange)':st.tot>0?'var(--red)':'var(--mut)';
+    return `<div class="sp-item">
+      <div class="sp-h">
+        <span class="sp-name">${m.i} ${m.n}</span>
+        <span style="display:flex;align-items:center;gap:8px">
+          ${st.tot>0?diffMap(m.id):''}
+          <span class="sp-pct" style="color:${col}">${st.tot>0?p+'%':'—'}</span>
+        </span>
+      </div>
+      <div class="sp-bar"><div class="sp-fill" style="width:${p}%;background:${col}"></div></div>
+      <div class="sp-info">${st.tot>0?`${st.cor} acertos de ${st.tot} questões · ${m.p}pts na prova`:`Não iniciado · ${m.p}pts`}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="dash-grid">
+      <div class="dcard"><div class="dcard-v">${tot}</div><div class="dcard-l">Respondidas</div><div class="dcard-s">${ns} matérias iniciadas</div></div>
+      <div class="dcard"><div class="dcard-v" style="color:${gp>=60?'var(--green)':'var(--red)'}">${tot>0?gp+'%':'—'}</div><div class="dcard-l">Taxa de acertos</div><div class="dcard-s">Meta: mín. 60%</div></div>
+      <div class="dcard"><div class="dcard-v" style="color:var(--gold)">${stk.n}</div><div class="dcard-l">Dias seguidos</div><div class="dcard-s">${stk.n>0?'🔥 Sequência ativa':'Comece hoje!'}</div></div>
+      <div class="dcard"><div class="dcard-v">${tot>0?cor:'—'}</div><div class="dcard-l">Corretas</div><div class="dcard-s">${tr.split(' ').slice(1).join(' ')}</div></div>
+    </div>
+    <div style="background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--mut);margin-bottom:18px">${tr}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <span class="nlbl" style="padding:0">Desempenho por matéria</span>
+      <span style="font-size:11px;color:var(--mut)">📗 fácil · 📙 médio · 📕 difícil = seu nível atual</span>
+    </div>
+    <div class="sp-list">${spHtml}</div>
+    <div style="margin-top:22px;text-align:center">
+      <button class="btn btn-ghost" style="font-size:12px" onclick="resetAll()">Zerar progresso</button>
+    </div>`;
+}
+
+function resetAll() {
+  if (!confirm('Zerar todo o progresso?')) return;
+  localStorage.removeItem('gm4');
+  localStorage.removeItem('gm4stk');
+  renderNav(); renderSide(); renderStk();
+  showDash();
+}
+
+function toast(msg, cls) {
+  document.querySelector('.toast')?.remove();
+  const t = document.createElement('div');
+  t.className = `toast ${cls}`; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2000);
+}
+
+// ── INIT ──
+renderNav(); renderSide(); renderStk();
+</script>
+</body>
+</html>
