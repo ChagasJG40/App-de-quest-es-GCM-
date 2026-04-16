@@ -1,0 +1,141 @@
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { base44 } from "@/api/base44Client";
+import { useEdital } from "../hooks/useEdital";
+import { BookOpen, Target, Clock, TrendingUp, Zap, ChevronRight, Play, Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import StatCard from "../components/StatCard";
+import SubjectCard from "../components/SubjectCard";
+
+export default function Dashboard() {
+  const { edital, loading: editalLoading } = useEdital();
+  const [sessions, setSessions] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function loadData() {
+      const [sessionsData, answersData] = await Promise.all([
+        base44.entities.QuizSession.list("-created_date", 50),
+        base44.entities.UserAnswer.list("-created_date", 500),
+      ]);
+      setSessions(sessionsData);
+      setAnswers(answersData);
+      setLoading(false);
+    }
+    loadData();
+  }, []);
+
+  if (editalLoading || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // No edital configured yet
+  if (!edital) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-6">
+        <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center">
+          <Upload className="w-10 h-10 text-primary" />
+        </div>
+        <div>
+          <h2 className="font-heading text-2xl font-bold mb-2">Nenhum edital configurado</h2>
+          <p className="text-muted-foreground text-sm max-w-sm">
+            Faça upload do seu edital para que a IA possa criar simulados e planos de estudo personalizados para você.
+          </p>
+        </div>
+        <Button onClick={() => navigate("/upload")} className="gap-2 rounded-xl px-8">
+          <Upload className="w-4 h-4" />
+          Configurar Edital
+        </Button>
+      </div>
+    );
+  }
+
+  const completedSessions = sessions.filter((s) => s.status === "completed");
+  const totalQuestions = answers.length;
+  const correctAnswers = answers.filter((a) => a.is_correct).length;
+  const accuracy = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+  const totalTime = sessions.reduce((acc, s) => acc + (s.time_spent_seconds || 0), 0);
+  const totalMinutes = Math.round(totalTime / 60);
+
+  function getSubjectStats(subjectName) {
+    const subjectAnswers = answers.filter((a) => a.subject === subjectName);
+    return {
+      total: subjectAnswers.length,
+      correct: subjectAnswers.filter((a) => a.is_correct).length,
+    };
+  }
+
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="font-heading text-3xl font-bold mb-1">Dashboard</h1>
+          <p className="text-muted-foreground text-sm">
+            {edital.title} · {edital.cargo}
+            {edital.exam_date ? ` · Prova em ${edital.exam_date}` : ""}
+          </p>
+        </div>
+        <Button onClick={() => navigate("/study")} className="gap-2 rounded-xl px-6">
+          <Play className="w-4 h-4" />
+          Começar a Estudar
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard icon={BookOpen} label="Questões Respondidas" value={totalQuestions} subtitle={`${completedSessions.length} simulados`} />
+        <StatCard icon={Target} label="Taxa de Acerto" value={`${accuracy}%`} subtitle={accuracy >= (edital.passing_score || 60) ? "Acima do mínimo" : `Abaixo do mínimo (${edital.passing_score || 60}%)`} />
+        <StatCard icon={Clock} label="Tempo de Estudo" value={totalMinutes > 60 ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m` : `${totalMinutes}m`} subtitle="Total acumulado" />
+        <StatCard icon={TrendingUp} label="Questões na Prova" value={edital.total_questions || "—"} subtitle={`Cargo: ${edital.cargo}`} />
+      </div>
+
+      <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 md:p-8 text-primary-foreground">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Zap className="w-5 h-5" />
+              <span className="font-heading font-bold text-lg">Modo Simulado</span>
+            </div>
+            <p className="text-sm opacity-90 max-w-md">
+              Simule a prova real com {edital.total_questions || "todas as"} questões
+              {edital.duration ? `, ${edital.duration} de duração` : ""}
+              {edital.passing_score ? ` e pontuação mínima de ${edital.passing_score}%` : ""}.
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/study?mode=simulation")}
+            className="gap-2 rounded-xl font-semibold whitespace-nowrap"
+          >
+            Iniciar Simulado
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-heading font-bold text-xl">Disciplinas</h2>
+          <Link to="/study" className="text-sm text-primary font-medium hover:underline">
+            Ver todas →
+          </Link>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {edital.subjects?.map((subject) => (
+            <SubjectCard
+              key={subject.name}
+              subject={subject}
+              stats={getSubjectStats(subject.name)}
+              onClick={() => navigate(`/study?subject=${encodeURIComponent(subject.name)}`)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
